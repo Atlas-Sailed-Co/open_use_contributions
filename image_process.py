@@ -4,22 +4,21 @@ import os
 import math
 
 def computeSpectralEntropy(imageFile):
-    #print imageFile + '\n'
     im = Image.open(imageFile)
     rgbHistogram = im.histogram()
     rgbEntropy = [] 
     try:
-        for rgb in range(3):
-            totalPixels = sum(rgbHistogram[rgb * 256 : (rgb + 1) * 256])
-            ent = 0.0
-            for col in range(rgb * 256, (rgb + 1) * 256):
-                freq = float(rgbHistogram[col]) / totalPixels
-                if freq > 0:
-                    ent = ent + freq * math.log(freq, 2)
-            ent = -ent
-            rgbEntropy.append( ent )
+	    for rgb in range(3):
+	    	totalPixels = sum(rgbHistogram[rgb * 256 : (rgb + 1) * 256])
+	        ent = 0.0
+	        for col in range(rgb * 256, (rgb + 1) * 256):
+	        	freq = float(rgbHistogram[col]) / totalPixels
+	        	if freq > 0:
+	        		ent = ent + freq * math.log(freq, 2)
+	        ent = -ent
+	        rgbEntropy.append( ent )
     except:
-        print 'non RGB img'
+       print 'non RGB img'
     return rgbEntropy
 
 
@@ -59,9 +58,10 @@ def squareImages(imageFile):
 
 
 
-root_dir = './data/'
-print 'Snannon Entropy for Red, Green, Blue:'
+#root_dir = './data/'
 
+#print 'Snannon Entropy for Red, Green, Blue:'
+root_dir = './data/'
 
 # myCode ="""I could draw you a picture of what 'Collaborate' means. 
 #            These words look like many different rising digital waves. 
@@ -82,19 +82,22 @@ print 'Snannon Entropy for Red, Green, Blue:'
 
 for directory, subdirectories, files in os.walk(root_dir):
     for file in files:
-        try:
-        	result = computeSpectralEntropy(os.path.join(directory, file))
-        	out = file + str(result[0]) +  ' ' + str(result[1]) +  ' ' + str(result [2]) + '\n'
-        	if ( (result[0] > 5) and (result[1] > 5) and (result [2] > 5) ):
-				im = Image.open(file)
-				name = file.split('/')
-				n = name[len(name)-1]
-				save_path = "data/high-ent/" + n
+    	#print file
+    	#result = computeSpectralEntropy(os.path.join(directory,file))
+    	try:
+    		print os.path.join(directory,file)
+    		result = computeSpectralEntropy(os.path.join(directory,file))
+    		print "Result: ", result
+    		spectral_entropy_sum = result[0] + result[1] + result[2]
+    		print "spectral Entropy Sum: ", spectral_entropy_sum 
+    		if (spectral_entropy_sum > 22):
+				im = Image.open(os.path.join(directory,file))
+				n = file.split('/')
+				name = n[len(n)-1]
+				save_path = "./high-ent/" + name
 				im.save(save_path)
-			#print out
-		except:
-			pass
-
+    	except:
+    		pass
 
 
 
